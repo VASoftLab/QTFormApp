@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 6.3.1
+** Created by: Qt User Interface Compiler version 6.2.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -58,8 +58,8 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "OpenCV :: Capture Video from Camera", nullptr));
-        lblCamera->setText(QCoreApplication::translate("MainWindow", "Camera", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Main Window", nullptr));
+        lblCamera->setText(QCoreApplication::translate("MainWindow", "CAMERA", nullptr));
         btnScreenshot->setText(QCoreApplication::translate("MainWindow", "SCREENSHOT", nullptr));
     } // retranslateUi
 
