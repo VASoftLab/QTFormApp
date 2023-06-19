@@ -34,5 +34,7 @@ private:
 public slots:
     void updatePicture();
 
+private slots:
+    void on_btnScreenshot_clicked();
 };
 #endif // MAINWINDOW_H
