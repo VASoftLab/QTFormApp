@@ -52,7 +52,11 @@ void MainWindow::updatePicture()
 
 void MainWindow::on_btnScreenshot_clicked()
 {
-    ToolWindow *toolWindow = new ToolWindow(this);
+    // Get current Image from camera
+    cv::Mat image;
+    webcam.read(image);
+
+    ToolWindow *toolWindow = new ToolWindow(image, this);
     toolWindow->exec();
     delete toolWindow;
 }
