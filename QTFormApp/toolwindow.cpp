@@ -9,6 +9,18 @@ ToolWindow::ToolWindow(cv::Mat image, QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Set images for buttons
+    QPixmap btn2Dimg(":/icons/img/icon-ruler.png");
+    QPixmap btn3Dimg(":/icons/img/icon-cube.png");
+
+    QIcon btn2Dico(btn2Dimg);
+    QIcon btn3Dico(btn3Dimg);
+
+    ui->btn2D->setIcon(btn2Dico);
+    ui->btn2D->setIconSize(btn2Dimg.rect().size());
+
+    ui->btn3D->setIcon(btn3Dico);
+    ui->btn3D->setIconSize(btn3Dimg.rect().size());
     // Border around the label
     ui->lblScreenshot->setStyleSheet("QLabel {"
                                      "border-style: solid;"

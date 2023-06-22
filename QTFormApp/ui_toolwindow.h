@@ -60,8 +60,8 @@ public:
     {
         ToolWindow->setWindowTitle(QCoreApplication::translate("ToolWindow", "Tool Window", nullptr));
         lblScreenshot->setText(QCoreApplication::translate("ToolWindow", "SCREENSHOT", nullptr));
-        btn2D->setText(QCoreApplication::translate("ToolWindow", "2D", nullptr));
-        btn3D->setText(QCoreApplication::translate("ToolWindow", "3D", nullptr));
+        btn2D->setText(QString());
+        btn3D->setText(QString());
         btnSave->setText(QCoreApplication::translate("ToolWindow", "SAVE", nullptr));
     } // retranslateUi
 

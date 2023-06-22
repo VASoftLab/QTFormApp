@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>img/icon-cube.png</file>
+        <file>img/icon-ruler.png</file>
+    </qresource>
+</RCC>
