@@ -2,6 +2,7 @@
 #include "ui_toolwindow.h"
 #include <QListWidgetItem>
 #include <QRadioButton>
+#include <QGraphicsPixmapItem>
 
 ToolWindow::ToolWindow(cv::Mat image, QWidget *parent) :
     QDialog(parent),
@@ -21,12 +22,6 @@ ToolWindow::ToolWindow(cv::Mat image, QWidget *parent) :
 
     ui->btn3D->setIcon(btn3Dico);
     ui->btn3D->setIconSize(btn3Dimg.rect().size());
-    // Border around the label
-    ui->lblScreenshot->setStyleSheet("QLabel {"
-                                     "border-style: solid;"
-                                     "border-width: 1px;"
-                                     "border-color: black; "
-                                     "}");
 
     // Check the source image
     if (image.empty())
@@ -42,9 +37,6 @@ ToolWindow::ToolWindow(cv::Mat image, QWidget *parent) :
                     destination.rows,
                     destination.step,
                     QImage::Format_RGB888);
-
-    // Show QImage using QLabel
-    ui->lblScreenshot->setPixmap(QPixmap::fromImage(imgcam));
 
     // Checkbox list generationi
     for (int i = 0; i < 10; i++)
@@ -70,9 +62,13 @@ ToolWindow::ToolWindow(cv::Mat image, QWidget *parent) :
                 ui->lswClusters->itemWidget(ui->lswClusters->item(0)));
         firstItem->setChecked(true);
     }
+
+    cameraScene = new CameraScene(imgcam);
+    ui->graphicsView->setScene(cameraScene);
 }
 
 ToolWindow::~ToolWindow()
 {
+    delete cameraScene;
     delete ui;
 }

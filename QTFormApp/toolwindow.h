@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "camerascene.h"
+
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -26,6 +28,8 @@ private:
     cv::Mat source;
     cv::Mat destination;
     QImage imgcam;
+
+    CameraScene *cameraScene;
 };
 
 #endif // TOOLWINDOW_H
