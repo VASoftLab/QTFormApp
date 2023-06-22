@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
+    <width>800</width>
     <height>500</height>
    </rect>
   </property>
@@ -22,11 +22,66 @@
      <height>480</height>
     </rect>
    </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
     <string>SCREENSHOT</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn2D">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>320</y>
+     <width>131</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>2D</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn3D">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>390</y>
+     <width>131</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>3D</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnSave">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>460</y>
+     <width>131</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>SAVE</string>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="lswClusters">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>10</y>
+     <width>131</width>
+     <height>301</height>
+    </rect>
    </property>
   </widget>
  </widget>
