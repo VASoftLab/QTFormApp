@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "toolwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), webcam(0)
@@ -37,11 +38,26 @@ void MainWindow::updatePicture()
     if (source.empty())
         return;
 
-    // Img preprocessing
+    // Image preprocessing
     cv::cvtColor(source, destination, cv::COLOR_BGR2RGB);
-    imgcam = QImage((uchar*) destination.data, destination.cols, destination.rows, destination.step, QImage::Format_RGB888);
+    imgcam = QImage((uchar*) destination.data,
+                    destination.cols,
+                    destination.rows,
+                    destination.step,
+                    QImage::Format_RGB888);
 
     // Show QImage using QLabel
     ui->lblCamera->setPixmap(QPixmap::fromImage(imgcam));
+}
+
+void MainWindow::on_btnScreenshot_clicked()
+{
+    // Get current Image from camera
+    cv::Mat image;
+    webcam.read(image);
+
+    ToolWindow *toolWindow = new ToolWindow(image, this);
+    toolWindow->exec();
+    delete toolWindow;
 }
 

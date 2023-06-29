@@ -9,14 +9,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    camerascene.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    toolwindow.cpp
 
 HEADERS += \
-    mainwindow.h
+    camerascene.h \
+    mainwindow.h \
+    toolwindow.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    toolwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -39,3 +44,6 @@ unix {
     INCLUDEPATH += /usr/include/opencv4
     LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgcodecs -lopencv_features2d -lopencv_calib3d -lopencv_videoio -lopencv_imgproc
 }
+
+RESOURCES += \
+    images.qrc
