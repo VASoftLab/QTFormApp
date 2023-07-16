@@ -33,7 +33,7 @@ private:
     cv::Mat destination;
     QImage imgcam;
 
-    void getData(Data3DVector *data);
+    Data3DVector getData();
 
 public slots:
     void updatePicture();

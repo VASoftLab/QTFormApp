@@ -13,6 +13,9 @@
 
 #include "datastructure.h"
 
+#include <algorithm>
+#include <iterator>
+
 namespace Ui {
 class ToolWindow;
 }
@@ -29,7 +32,10 @@ private:
     Ui::ToolWindow *ui;    
     cv::Mat source;
     cv::Mat destination;
-    QImage imgcam;
+    QImage imgcam;    
+    Data3DVector points;
+
+    std::vector<int> getClusterIDs(Data3DVector points);
 
     CameraScene *cameraScene;
 };

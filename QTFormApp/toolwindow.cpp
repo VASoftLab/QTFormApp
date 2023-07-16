@@ -30,6 +30,10 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
     // Image copy
     source = image.clone();
 
+    // Data copy
+    points = data;
+    std::vector<int> clusterIDs = getClusterIDs(points);
+
     // Image preprocessing
     cv::cvtColor(source, destination, cv::COLOR_BGR2RGB);
     imgcam = QImage((uchar*) destination.data,
@@ -39,7 +43,7 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
                     QImage::Format_RGB888);
 
     // Checkbox list generationi
-    for (int i = 0; i < 10; i++)
+    for (int i : clusterIDs)
     {
         // Checkbox List
         // QListWidgetItem *item = new QListWidgetItem;
@@ -51,7 +55,7 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
         QListWidgetItem *item = new QListWidgetItem(ui->lswClusters);
         ui->lswClusters->setItemWidget(
             item,
-            new QRadioButton("Claster " + QString::number(i + 1)));
+            new QRadioButton("Claster " + QString::number(i)));
     }
 
     // Check the first item
@@ -71,4 +75,16 @@ ToolWindow::~ToolWindow()
 {
     delete cameraScene;
     delete ui;
+}
+
+std::vector<int> ToolWindow::getClusterIDs(Data3DVector points)
+{
+    std::vector<int> clusterIDs = points.cluster;
+    std::vector<int>::iterator it;
+    std::sort(clusterIDs.begin(), clusterIDs.end());
+
+    it = std::unique(clusterIDs.begin(), clusterIDs.end());
+    clusterIDs.resize(std::distance(clusterIDs.begin(), it));
+
+    return clusterIDs;
 }

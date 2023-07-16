@@ -52,8 +52,10 @@ void MainWindow::updatePicture()
     ui->lblCamera->setPixmap(QPixmap::fromImage(imgcam));
 }
 
-void MainWindow:: getData(Data3DVector *data)
+Data3DVector MainWindow:: getData()
 {
+    Data3DVector data;
+
     // Путь к папке с данными
     auto dataPath = QDir::cleanPath(qApp->applicationDirPath() + QDir::separator() + "data");
     // qDebug() << "Data path : " << dataPath;
@@ -112,25 +114,24 @@ void MainWindow:: getData(Data3DVector *data)
             data3DItem.cluster = clst;
 
             // Накопление данных
-            data->vu.push_back(data3DItem.vu);
-            data->xyz.push_back(data3DItem.xyz);
-            data->rgb.push_back(data3DItem.rgb);
-            data->cluster.push_back(data3DItem.cluster);
+            data.vu.push_back(data3DItem.vu);
+            data.xyz.push_back(data3DItem.xyz);
+            data.rgb.push_back(data3DItem.rgb);
+            data.cluster.push_back(data3DItem.cluster);
         }
     }
+
+    return data;
 }
 
 void MainWindow::on_btnScreenshot_clicked()
 {
-
-
     // Get current Image from camera
     cv::Mat image;
     webcam.read(image);
 
     // Массив данных описывающий облоко 3D точек
-    Data3DVector data;
-    getData(&data);
+    Data3DVector data = getData();
 
     // Show tool window
     ToolWindow *toolWindow = new ToolWindow(image, data, this);
