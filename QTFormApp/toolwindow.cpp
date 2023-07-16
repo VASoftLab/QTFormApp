@@ -31,8 +31,10 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
     source = image.clone();
 
     // Data copy
-    points = data;
-    std::vector<int> clusterIDs = getClusterIDs(points);
+    allPoints = data;
+    // Get unique clusters IDs
+    std::vector<int> clusterIDs = getClusterIDs(allPoints);
+
 
     // Image preprocessing
     cv::cvtColor(source, destination, cv::COLOR_BGR2RGB);
@@ -55,7 +57,7 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
         QListWidgetItem *item = new QListWidgetItem(ui->lswClusters);
         ui->lswClusters->setItemWidget(
             item,
-            new QRadioButton("Claster " + QString::number(i)));
+            new QRadioButton(QString("Cluster %1").arg(i)));
     }
 
     // Check the first item
@@ -65,6 +67,8 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
             static_cast<QRadioButton*>(
                 ui->lswClusters->itemWidget(ui->lswClusters->item(0)));
         firstItem->setChecked(true);
+
+        ui->lswClusters->item(0)->setSelected(true);
     }
 
     cameraScene = new CameraScene(imgcam);
@@ -87,4 +91,31 @@ std::vector<int> ToolWindow::getClusterIDs(Data3DVector points)
     clusterIDs.resize(std::distance(clusterIDs.begin(), it));
 
     return clusterIDs;
+}
+
+void ToolWindow::on_lswClusters_itemSelectionChanged()
+{
+    auto selectedItem = static_cast<QRadioButton*>(ui->lswClusters->itemWidget(ui->lswClusters->selectedItems().first()));
+    QString seletedText = selectedItem->text();
+    int ID = seletedText.remove("Cluster ").toInt();
+
+    // Remove old data
+    clusterPoints.cluster.clear();
+    clusterPoints.rgb.clear();
+    clusterPoints.vu.clear();
+    clusterPoints.xyz.clear();
+
+    // Filter only selected cluster data
+    for (size_t i = 0; i < allPoints.cluster.size(); i++)
+    {
+        if (allPoints.cluster.at(i) == ID)
+        {
+            clusterPoints.cluster.push_back(allPoints.cluster.at(i));
+            clusterPoints.rgb.push_back(allPoints.rgb.at(i));
+            clusterPoints.vu.push_back(allPoints.vu.at(i));
+            clusterPoints.xyz.push_back(allPoints.xyz.at(i));
+        }
+    }
+
+    qDebug() << "Selected Cluster ID: " << ID << "(" << clusterPoints.cluster.size() << "/" << allPoints.cluster.size() << ")";
 }

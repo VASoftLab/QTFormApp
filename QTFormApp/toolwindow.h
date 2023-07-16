@@ -28,12 +28,17 @@ public:
     explicit ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent = nullptr);
     ~ToolWindow();
 
+private slots:
+    void on_lswClusters_itemSelectionChanged();
+
 private:
     Ui::ToolWindow *ui;    
     cv::Mat source;
     cv::Mat destination;
     QImage imgcam;    
-    Data3DVector points;
+    Data3DVector allPoints;
+    Data3DVector clusterPoints;
+
 
     std::vector<int> getClusterIDs(Data3DVector points);
 
