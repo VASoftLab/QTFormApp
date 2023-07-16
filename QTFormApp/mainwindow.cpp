@@ -52,7 +52,7 @@ void MainWindow::updatePicture()
     ui->lblCamera->setPixmap(QPixmap::fromImage(imgcam));
 }
 
-Data3DVector MainWindow:: getData()
+Data3DVector MainWindow:: getData(int rows, int cols, bool norm = true)
 {
     Data3DVector data;
 
@@ -64,7 +64,6 @@ Data3DVector MainWindow:: getData()
     auto fileName = QFileDialog::getOpenFileName(this, tr("Open Data File"), dataPath, tr("TXT Files (*.txt)"));
     QFile file(fileName);
     QStringList lineData;
-    QString strData;
     Data3DItem data3DItem;
 
     int vuX;
@@ -76,6 +75,11 @@ Data3DVector MainWindow:: getData()
     int rgbG;
     int rgbB;
     int clst;
+
+    int Xmin = INT_MAX;
+    int Xmax = INT_MIN;
+    int Ymin = INT_MAX;
+    int Ymax = INT_MIN;
 
     if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -89,6 +93,16 @@ Data3DVector MainWindow:: getData()
             vuX = lineData[0].trimmed().toInt();
             vuY = lineData[1].trimmed().toInt();
 
+            if (vuX > Xmax)
+                Xmax = vuX;
+            if (vuX < Xmin)
+                Xmin = vuX;
+
+            if (vuY > Ymax)
+                Ymax = vuY;
+            if (vuY < Ymin)
+                Ymin = vuY;
+
             xyzX = lineData[2].trimmed().toDouble();
             xyzY = lineData[3].trimmed().toDouble();
             xyzZ = lineData[4].trimmed().toDouble();
@@ -98,6 +112,18 @@ Data3DVector MainWindow:: getData()
             rgbB = lineData[7].trimmed().toInt();
 
             clst = lineData[8].trimmed().toInt();
+
+            // Очистка структуры
+            data3DItem.vu.clear();
+            data3DItem.vu.clear();
+
+            data3DItem.xyz.clear();
+            data3DItem.xyz.clear();
+            data3DItem.xyz.clear();
+
+            data3DItem.rgb.clear();
+            data3DItem.rgb.clear();
+            data3DItem.rgb.clear();
 
             // Заполнение структуры
             data3DItem.vu.push_back(vuX);
@@ -119,6 +145,17 @@ Data3DVector MainWindow:: getData()
             data.rgb.push_back(data3DItem.rgb);
             data.cluster.push_back(data3DItem.cluster);
         }
+
+        if (norm)
+        {
+            for (size_t i = 0; i < data.vu.size(); i++)
+            {
+                if (Xmax != Xmin)
+                    data.vu.at(i).at(0) = data.vu.at(i).at(0) * cols / (Xmax - Xmin);
+                if (Ymax != Ymin)
+                    data.vu.at(i).at(1) = data.vu.at(i).at(1) * rows / (Ymax - Ymin);
+            }
+        }
     }
 
     return data;
@@ -131,7 +168,7 @@ void MainWindow::on_btnScreenshot_clicked()
     webcam.read(image);
 
     // Массив данных описывающий облоко 3D точек
-    Data3DVector data = getData();
+    Data3DVector data = getData(image.rows, image.cols);
 
     // Show tool window
     ToolWindow *toolWindow = new ToolWindow(image, data, this);

@@ -103,7 +103,11 @@ void CameraScene::set3DPoints(Data3DVector points)
     {
         auto elipse = new QGraphicsEllipseItem();
         elipse->setPen(QPen(Qt::red, 1, Qt::SolidLine));
-        elipse->setRect(0 + i*5, 0 + i*5, CIRCLE_D, CIRCLE_D);
+        // Add real XY from 3D cloud data structure
+        int X = points.vu.at(i).at(0); // X
+        int Y = points.vu.at(i).at(1); // Y
+        qDebug() << "(" << X << ";" << Y << ")";
+        elipse->setRect(X, Y, CIRCLE_D, CIRCLE_D);
         circleItems.push_back(elipse);
         this->addItem(elipse);
     }
