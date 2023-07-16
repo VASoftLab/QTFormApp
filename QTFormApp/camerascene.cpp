@@ -77,3 +77,34 @@ void CameraScene::setMode(Mode mode)
 {
     sceneMode = mode;
 }
+
+void CameraScene::set3DPoints(Data3DVector points)
+{
+    clusterPoints.cluster.clear();
+    clusterPoints.rgb.clear();
+    clusterPoints.vu.clear();
+    clusterPoints.xyz.clear();
+
+    // Clear old circles data
+    for (size_t i = 0; i < circleItems.size(); i++)
+    {
+        // Remove the circle form scene
+        this->removeItem(circleItems.at(i));
+
+        // Free memory (circle object in vector)
+        delete circleItems.at(i);
+    }
+
+    // Clear vector of items
+    circleItems.clear();
+
+    // Create new circle items
+    for (size_t i = 0; i < points.cluster.size(); i++)
+    {
+        auto elipse = new QGraphicsEllipseItem();
+        elipse->setPen(QPen(Qt::red, 1, Qt::SolidLine));
+        elipse->setRect(0 + i*5, 0 + i*5, CIRCLE_D, CIRCLE_D);
+        circleItems.push_back(elipse);
+        this->addItem(elipse);
+    }
+}

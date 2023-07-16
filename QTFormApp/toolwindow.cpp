@@ -44,6 +44,9 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
                     destination.step,
                     QImage::Format_RGB888);
 
+    cameraScene = new CameraScene(imgcam);
+    ui->graphicsView->setScene(cameraScene);
+
     // Checkbox list generationi
     for (int i : clusterIDs)
     {
@@ -70,9 +73,6 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
 
         ui->lswClusters->item(0)->setSelected(true);
     }
-
-    cameraScene = new CameraScene(imgcam);
-    ui->graphicsView->setScene(cameraScene);
 }
 
 ToolWindow::~ToolWindow()
@@ -117,5 +117,8 @@ void ToolWindow::on_lswClusters_itemSelectionChanged()
         }
     }
 
+    // Debug Information
     qDebug() << "Selected Cluster ID: " << ID << "(" << clusterPoints.cluster.size() << "/" << allPoints.cluster.size() << ")";
+
+    cameraScene->set3DPoints(clusterPoints);
 }
