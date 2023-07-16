@@ -11,6 +11,8 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "datastructure.h"
+
 namespace Ui {
 class ToolWindow;
 }
@@ -20,7 +22,7 @@ class ToolWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit ToolWindow(cv::Mat image, QWidget *parent = nullptr);
+    explicit ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent = nullptr);
     ~ToolWindow();
 
 private:

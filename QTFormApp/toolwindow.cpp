@@ -4,7 +4,7 @@
 #include <QRadioButton>
 #include <QGraphicsPixmapItem>
 
-ToolWindow::ToolWindow(cv::Mat image, QWidget *parent) :
+ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ToolWindow)
 {

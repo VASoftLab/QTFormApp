@@ -10,6 +10,8 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "datastructure.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -30,6 +32,8 @@ private:
     cv::Mat source;
     cv::Mat destination;
     QImage imgcam;
+
+    void getData(Data3DVector *data);
 
 public slots:
     void updatePicture();

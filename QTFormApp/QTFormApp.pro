@@ -16,6 +16,7 @@ SOURCES += \
 
 HEADERS += \
     camerascene.h \
+    datastructure.h \
     mainwindow.h \
     toolwindow.h
 
