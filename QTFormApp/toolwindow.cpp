@@ -46,6 +46,8 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
 
     cameraScene = new CameraScene(imgcam);
     ui->graphicsView->setScene(cameraScene);
+    // https://stackoverflow.com/questions/7772080/tracking-mouse-move-in-qgraphicsscene-class
+    ui->graphicsView->setMouseTracking(true);
 
     // Checkbox list generationi
     for (int i : clusterIDs)

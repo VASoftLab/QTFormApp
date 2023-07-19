@@ -13,8 +13,11 @@ public:
     explicit CameraScene(QImage img, QObject *parent = nullptr);
     ~CameraScene();
 
-    enum Mode {NoMode, DrawLine};
+    enum Mode {NoMode, LBM, RBM};
+
     void setMode(Mode mode);
+    Mode getMode();
+
     void set3DPoints(Data3DVector points);
 
     static const int CIRCLE_D = 10;
@@ -25,6 +28,10 @@ private:
     QImage screenshot;
     QGraphicsLineItem* lineItem;
     std::vector<QGraphicsEllipseItem*> circleItems;
+    QGraphicsEllipseItem* circleCurrent;
+
+    // QGraphicsEllipseItem* circleStart;
+    // QGraphicsEllipseItem* circleEnd;
 
     Mode sceneMode;
 

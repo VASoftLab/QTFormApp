@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
         timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(updatePicture()));
         timer->start(50);
-    }
+    }    
 }
 
 MainWindow::~MainWindow()
@@ -151,9 +151,9 @@ Data3DVector MainWindow:: getData(int rows, int cols, bool norm = true)
             for (size_t i = 0; i < data.vu.size(); i++)
             {
                 if (Xmax != Xmin)
-                    data.vu.at(i).at(0) = data.vu.at(i).at(0) * cols / (Xmax - Xmin);
+                    data.vu.at(i).at(0) = cols * (data.vu.at(i).at(0) - Xmin) / (Xmax - Xmin);
                 if (Ymax != Ymin)
-                    data.vu.at(i).at(1) = data.vu.at(i).at(1) * rows / (Ymax - Ymin);
+                    data.vu.at(i).at(1) = rows * (data.vu.at(i).at(1) - Ymin) / (Ymax - Ymin);
             }
         }
     }
