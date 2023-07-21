@@ -13,7 +13,7 @@ public:
     explicit CameraScene(QImage img, QObject *parent = nullptr);
     ~CameraScene();
 
-    enum Mode {NoMode, LBM, RBM};
+    enum Mode {Undefined, LeftButton, RightButton};
 
     void setMode(Mode mode);
     Mode getMode();
@@ -30,8 +30,8 @@ private:
     std::vector<QGraphicsEllipseItem*> circleItems;
     QGraphicsEllipseItem* circleCurrent;
 
-    // QGraphicsEllipseItem* circleStart;
-    // QGraphicsEllipseItem* circleEnd;
+    QGraphicsEllipseItem* circleStart;
+    QGraphicsEllipseItem* circleEnd;
 
     Mode sceneMode;
 
