@@ -97,7 +97,8 @@ std::vector<int> ToolWindow::getClusterIDs(Data3DVector points)
 
 void ToolWindow::on_lswClusters_itemSelectionChanged()
 {
-    auto selectedItem = static_cast<QRadioButton*>(ui->lswClusters->itemWidget(ui->lswClusters->selectedItems().first()));
+    auto selectedItem = static_cast<QRadioButton*>(
+        ui->lswClusters->itemWidget(ui->lswClusters->selectedItems().first()));
     QString seletedText = selectedItem->text();
     int ID = seletedText.remove("Cluster ").toInt();
 
@@ -122,5 +123,6 @@ void ToolWindow::on_lswClusters_itemSelectionChanged()
     // Debug Information
     qDebug() << "Selected Cluster ID: " << ID << "(" << clusterPoints.cluster.size() << "/" << allPoints.cluster.size() << ")";
 
+    cameraScene->removeRule(); // Удаляем старую линейку (если была создана)
     cameraScene->set3DPoints(clusterPoints);
 }
