@@ -3,6 +3,9 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsLineItem>
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 CameraScene::CameraScene(QImage img, QObject *parent)
     : QGraphicsScene{parent}
 {
@@ -22,6 +25,7 @@ CameraScene::CameraScene(QImage img, QObject *parent)
     circleCurrent = nullptr;
     circleStart = nullptr;
     circleEnd = nullptr;
+    textItem = nullptr;
 
     setMode(Mode::Undefined);
 }
@@ -67,14 +71,21 @@ CameraScene::~CameraScene()
         }
         delete circleEnd;
     }
+
+    if (textItem != nullptr)
+    {
+        if (textItemAdded)
+        {
+            this->removeItem(textItem);
+            textItemAdded = false;
+        }
+        delete textItem;
+    }
 }
 
 void CameraScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     CameraScene::Mode currentMode = getMode();
-
-    startPoint = event->scenePos();
-    endPoint = event->scenePos();
 
     if (event->buttons() & Qt::LeftButton)
     {
@@ -82,6 +93,9 @@ void CameraScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if ((currentMode == Mode::Undefined) ||
             (currentMode == Mode::RightButton))
         {
+            startPoint = event->scenePos();
+            endPoint = event->scenePos();
+
             if (circleStart != nullptr)
             {
                 if (circleStartAdded)
@@ -97,6 +111,15 @@ void CameraScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 {
                     this->removeItem(circleEnd);
                     circleEndAdded = false;
+                }
+            }
+
+            if (textItem != nullptr)
+            {
+                if (textItemAdded)
+                {
+                    this->removeItem(textItem);
+                    textItemAdded = false;
                 }
             }
 
@@ -121,13 +144,66 @@ void CameraScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
 
             createCircleStart(circleCurrent->rect()); // Создаем первую точку
+            circleStartRealX = circleCurrentRealX;
+            circleStartRealY = circleCurrentRealY;
+            circleStartRealZ = circleCurrentRealZ;
             setMode(Mode::LeftButton); // Устанавливаем режим
         }
 
         // Окончание отрисовки (второе нажатие ЛКМ)
         if (currentMode == Mode::LeftButton)
         {
+            endPoint = event->scenePos();
             createCircleEnd(circleCurrent->rect()); // Создаем вторую точку
+            circleEndRealX = circleCurrentRealX;
+            circleEndRealY = circleCurrentRealY;
+            circleEndRealZ = circleCurrentRealZ;
+            ///////////////////////////////////////////////////////////////////
+            // Добавляем текстовую метку
+
+            double distance = qSqrt(qPow(circleStartRealX - circleEndRealX, 2) +
+                                    qPow(circleStartRealY - circleEndRealY, 2) +
+                                    qPow(circleStartRealZ - circleEndRealZ, 2));
+
+            ///////////////////////////////////////////////////////////////////
+            // Расчет угла поворота текстовой метки
+            ///////////////////////////////////////////////////////////////////
+            double a = qFabs(endPoint.y() - startPoint.y());
+            double b = qFabs(endPoint.x() - startPoint.x());
+            double c = qSqrt(a*a + b*b);
+            double alpha = 0;
+
+            if (startPoint.x() > endPoint.x())
+            {
+                if (startPoint.y() < endPoint.y())
+                {
+                    alpha = qRadiansToDegrees(qAcos(a / c)) - 90;
+                }
+                if (startPoint.y() > endPoint.y())
+                {
+                    alpha = qRadiansToDegrees(qAsin(a / c));
+                }
+            }
+            else if (startPoint.x() < endPoint.x())
+            {
+                if (startPoint.y() < endPoint.y())
+                {
+                    alpha = qRadiansToDegrees(qAsin(a / c));
+                }
+                if (startPoint.y() > endPoint.y())
+                {
+                    alpha = qRadiansToDegrees(qAcos(a / c)) + 270;
+                }
+            }
+            else
+                alpha = 0;
+
+            qreal X = (startPoint.x() + endPoint.x()) / 2;
+            qreal Y = (startPoint.y() + endPoint.y()) / 2;
+
+            createTextItem(X, Y, distance, alpha);
+            ///////////////////////////////////////////////////////////////////
+
             setMode(Mode::Undefined); // Сброс режима
         }
 
@@ -188,6 +264,10 @@ void CameraScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                                    CIRCLE_D, CIRCLE_D);
             this->addItem(circleCurrent);
             circleCurrentAdded = true;
+
+            circleCurrentRealX = clusterPoints.xyz.at(i).at(0);
+            circleCurrentRealY = clusterPoints.xyz.at(i).at(1);
+            circleCurrentRealZ = clusterPoints.xyz.at(i).at(2);
 
             circleFound = true;
             break;
@@ -281,6 +361,24 @@ void CameraScene::createCircleEnd(QRectF rect)
         circleEndAdded = true;
     }
 }
+void CameraScene::createTextItem(qreal X, qreal Y, double distance, double angle)
+{
+    if (textItem == nullptr)
+    {
+        textItem = new QGraphicsTextItem();
+        textItem->setDefaultTextColor(Qt::red);
+    }
+
+    textItem->setPos(X, Y);
+    textItem->setPlainText(QString::number(distance, 'f', 2));
+    textItem->setRotation(angle);
+
+    if (!textItemAdded)
+    {
+        this->addItem(textItem);
+        textItemAdded = true;
+    }
+}
 void CameraScene::removeRule()
 {
     if (circleStart != nullptr)
@@ -307,6 +405,15 @@ void CameraScene::removeRule()
         {
             this->removeItem(lineItem);
             lineItemAdded = false;
+        }
+    }
+
+    if (textItem != nullptr)
+    {
+        if (textItemAdded)
+        {
+            this->removeItem(textItem);
+            textItemAdded = false;
         }
     }
 }

@@ -32,6 +32,7 @@ private:
     QGraphicsEllipseItem* circleCurrent;
     QGraphicsEllipseItem* circleStart;
     QGraphicsEllipseItem* circleEnd;
+    QGraphicsTextItem* textItem;
 
     // TODO: Использование данного флага - костыль.
     // Подумать как оптимизировать
@@ -39,6 +40,19 @@ private:
     bool circleCurrentAdded = false;
     bool circleStartAdded = false;
     bool circleEndAdded = false;
+    bool textItemAdded = false;
+
+    double circleCurrentRealX = 0;
+    double circleCurrentRealY = 0;
+    double circleCurrentRealZ = 0;
+
+    double circleStartRealX = 0;
+    double circleStartRealY = 0;
+    double circleStartRealZ = 0;
+
+    double circleEndRealX = 0;
+    double circleEndRealY = 0;
+    double circleEndRealZ = 0;
 
     Mode sceneMode;
     Data3DVector clusterPoints;
@@ -47,6 +61,7 @@ private:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void createCircleStart(QRectF rect);
     void createCircleEnd(QRectF rect);
+    void createTextItem(qreal X, qreal Y, double distance, double angle);
 };
 
 #endif // CAMERASCENE_H
