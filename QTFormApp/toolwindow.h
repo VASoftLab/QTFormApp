@@ -31,6 +31,10 @@ public:
 private slots:
     void on_lswClusters_itemSelectionChanged();
 
+    void on_btn2D_clicked();
+
+    void on_btn3D_clicked();
+
 private:
     Ui::ToolWindow *ui;    
     cv::Mat source;

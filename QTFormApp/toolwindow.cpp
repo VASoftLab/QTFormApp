@@ -126,3 +126,15 @@ void ToolWindow::on_lswClusters_itemSelectionChanged()
     cameraScene->removeRule(); // Удаляем старую линейку (если была создана)
     cameraScene->set3DPoints(clusterPoints);
 }
+
+void ToolWindow::on_btn2D_clicked()
+{
+    ui->graphicsView->setVisible(true);
+}
+
+
+void ToolWindow::on_btn3D_clicked()
+{
+    ui->graphicsView->setVisible(false);
+}
+
