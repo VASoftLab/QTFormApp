@@ -75,11 +75,34 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
 
         ui->lswClusters->item(0)->setSelected(true);
     }
+
+    // Создаем объекты для работы с 3D-графиком
+    graph3D = new Q3DScatter();
+    series3D = new QScatter3DSeries();
+
+    graph3D->setShadowQuality(QAbstract3DGraph::ShadowQualitySoftLow);
+    graph3D->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
+
+    graph3D->addSeries(series3D);
+
+    container3D = QWidget::createWindowContainer(graph3D);
+
+    // Установка темы
+    Q3DTheme *currentTheme = graph3D->activeTheme();
+    currentTheme->setBackgroundEnabled(false);
+    currentTheme->setType(Q3DTheme::ThemeArmyBlue);
+
+    setMode(ToolMode::Mode2D);
 }
 
 ToolWindow::~ToolWindow()
 {
     delete cameraScene;
+
+    delete series3D;
+    delete graph3D;
+    delete container3D;
+
     delete ui;
 }
 
@@ -129,12 +152,53 @@ void ToolWindow::on_lswClusters_itemSelectionChanged()
 
 void ToolWindow::on_btn2D_clicked()
 {
-    ui->graphicsView->setVisible(true);
+    if (getMode() == ToolWindow::Mode3D)
+    {
+        container3D->setVisible(false);
+        ui->graphicsView->setVisible(true);
+
+        ui->verticalLayout->removeWidget(container3D);
+        ui->verticalLayout->addWidget(ui->graphicsView);
+
+        setMode(ToolMode::Mode2D);
+    }
 }
 
 
 void ToolWindow::on_btn3D_clicked()
 {
-    ui->graphicsView->setVisible(false);
+    if (getMode() == ToolWindow::Mode2D)
+    {
+        // Удалить старые точки
+        series3D->dataProxy()->removeItems(0, series3D->dataProxy()->itemCount());
+
+        // Получить новые точки
+        QScatterDataArray data;
+        for (size_t i = 0; i < clusterPoints.cluster.size(); i++)
+        {
+            data << QVector3D(clusterPoints.xyz.at(i).at(0),
+                              clusterPoints.xyz.at(i).at(1),
+                              clusterPoints.xyz.at(i).at(2));
+        }
+
+        // Передать точки в объект Series
+        series3D->dataProxy()->addItems(data);
+
+        ui->graphicsView->setVisible(false);
+        container3D->setVisible(true);
+
+        ui->verticalLayout->removeWidget(ui->graphicsView);
+        ui->verticalLayout->addWidget(container3D);
+
+        setMode(ToolMode::Mode3D);
+    }
 }
 
+void ToolWindow::setMode(ToolMode mode)
+{
+    toolMode = mode;
+}
+ToolWindow::ToolMode ToolWindow::getMode()
+{
+    return toolMode;
+}

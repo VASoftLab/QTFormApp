@@ -15,6 +15,8 @@
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -25,6 +27,8 @@ public:
     QPushButton *btn3D;
     QPushButton *btnSave;
     QListWidget *lswClusters;
+    QWidget *verticalLayoutWidget;
+    QVBoxLayout *verticalLayout;
     QGraphicsView *graphicsView;
 
     void setupUi(QDialog *ToolWindow)
@@ -44,11 +48,25 @@ public:
         lswClusters = new QListWidget(ToolWindow);
         lswClusters->setObjectName(QString::fromUtf8("lswClusters"));
         lswClusters->setGeometry(QRect(660, 10, 131, 301));
-        graphicsView = new QGraphicsView(ToolWindow);
+        verticalLayoutWidget = new QWidget(ToolWindow);
+        verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
+        verticalLayoutWidget->setGeometry(QRect(10, 10, 642, 482));
+        verticalLayout = new QVBoxLayout(verticalLayoutWidget);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setContentsMargins(0, 0, 0, 0);
+        graphicsView = new QGraphicsView(verticalLayoutWidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(10, 10, 640, 480));
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(graphicsView->sizePolicy().hasHeightForWidth());
+        graphicsView->setSizePolicy(sizePolicy);
+        graphicsView->setMinimumSize(QSize(640, 480));
         graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+        verticalLayout->addWidget(graphicsView);
+
 
         retranslateUi(ToolWindow);
 

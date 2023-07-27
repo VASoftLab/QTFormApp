@@ -16,6 +16,8 @@
 #include <algorithm>
 #include <iterator>
 
+#include <Q3DScatter>
+
 namespace Ui {
 class ToolWindow;
 }
@@ -27,6 +29,10 @@ class ToolWindow : public QDialog
 public:
     explicit ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent = nullptr);
     ~ToolWindow();
+
+    enum ToolMode {Mode2D, Mode3D};
+    void setMode(ToolMode mode);
+    ToolMode getMode();
 
 private slots:
     void on_lswClusters_itemSelectionChanged();
@@ -43,6 +49,11 @@ private:
     Data3DVector allPoints;
     Data3DVector clusterPoints;
 
+    ToolMode toolMode;
+
+    Q3DScatter *graph3D;
+    QScatter3DSeries *series3D;
+    QWidget *container3D;
 
     std::vector<int> getClusterIDs(Data3DVector points);
 
