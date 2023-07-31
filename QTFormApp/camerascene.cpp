@@ -93,6 +93,10 @@ void CameraScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if ((currentMode == Mode::Undefined) ||
             (currentMode == Mode::RightButton))
         {
+            // Сброс отрисовки, если действие не над точкой
+            if (!circleFound)
+                return;
+
             startPoint = event->scenePos();
             endPoint = event->scenePos();
 
@@ -153,6 +157,10 @@ void CameraScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         // Окончание отрисовки (второе нажатие ЛКМ)
         if (currentMode == Mode::LeftButton)
         {
+            // Сброс отрисовки, если действие не над точкой
+            if (!circleFound)
+                return;
+
             endPoint = event->scenePos();
             createCircleEnd(circleCurrent->rect()); // Создаем вторую точку
             circleEndRealX = circleCurrentRealX;
@@ -201,6 +209,7 @@ void CameraScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             qreal X = (startPoint.x() + endPoint.x()) / 2;
             qreal Y = (startPoint.y() + endPoint.y()) / 2;
 
+            // X, Y - центр отрезка
             createTextItem(X, Y, distance, alpha);
             ///////////////////////////////////////////////////////////////////
 
@@ -220,7 +229,7 @@ void CameraScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void CameraScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     CameraScene::Mode currentMode = getMode();
-    bool circleFound = false;
+    circleFound = false;
 
     // Получаем конечную текущую точку
     endPoint = event->scenePos();
@@ -233,7 +242,7 @@ void CameraScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                           endPoint.y() - startPoint.y());
     }
 
-    // Проверяем, попали ли в точку 3D облака
+    // Проверяем, попали ли в точку из 3D облака
     for (size_t i = 0; i < clusterPoints.cluster.size(); i++)
     {
         if ((endPoint.x() > clusterPoints.vu.at(i).at(0) - CIRCLE_D / 2) &&
@@ -258,7 +267,7 @@ void CameraScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 circleCurrent->setPen(QPen(Qt::red, 1, Qt::SolidLine));
             }
 
-            // Add real XY from 3D cloud data structure
+            // Отрисовка окружности в области точки
             circleCurrent->setRect(clusterPoints.vu.at(i).at(0) - CIRCLE_D / 2,
                                    clusterPoints.vu.at(i).at(1) - CIRCLE_D / 2,
                                    CIRCLE_D, CIRCLE_D);
@@ -369,8 +378,20 @@ void CameraScene::createTextItem(qreal X, qreal Y, double distance, double angle
         textItem->setDefaultTextColor(Qt::red);
     }
 
+    // Задаем шрифт для метки
+    QFont font;
+    font.setPixelSize(18);
+    font.setBold(false);
+
+    textItem->setFont(font);
+    auto W = textItem->boundingRect().width();
+    auto H = textItem->boundingRect().height();
     textItem->setPos(X, Y);
-    textItem->setPlainText(QString::number(distance, 'f', 2));
+    // textItem->setPlainText(QString::number(distance, 'f', 2));
+    // Отрисовка метки на белом фоне с 50% прозрачностью
+    textItem->setHtml(
+        QString("<div style='background:rgba(255, 255, 255, 50%);'>&nbsp;") +
+        QString::number(distance, 'f', 2) + QString("&nbsp;</div>"));
     textItem->setRotation(angle);
 
     if (!textItemAdded)

@@ -3,12 +3,15 @@
 #include "toolwindow.h"
 
 #include <QFileDialog>
+#include <QScreen>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), webcam(0)
 {
     setFixedSize(660, 560);
     ui->setupUi(this);
+    // Центрируем окно в пределах экрана
+    move(screen()->geometry().center() - frameGeometry().center());
 
     // Border around the label
     ui->lblCamera->setStyleSheet("QLabel {"
@@ -24,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(updatePicture()));
-        timer->start(50);
+        timer->start(100);
     }    
 }
 

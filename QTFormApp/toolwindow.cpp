@@ -1,14 +1,18 @@
 #include "toolwindow.h"
 #include "ui_toolwindow.h"
+
 #include <QListWidgetItem>
 #include <QRadioButton>
 #include <QGraphicsPixmapItem>
+#include <QScreen>
 
 ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ToolWindow)
 {
     ui->setupUi(this);
+    // Центрируем окно в пределах экрана
+    move(screen()->geometry().center() - frameGeometry().center());
 
     // Set images for buttons
     QPixmap btn2Dimg(":/icons/img/icon-ruler.png");
@@ -49,6 +53,19 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
     // https://stackoverflow.com/questions/7772080/tracking-mouse-move-in-qgraphicsscene-class
     ui->graphicsView->setMouseTracking(true);
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Создаем объекты для работы с 3D-графиком
+    graph3D = new Q3DScatter();
+    series3D = new QScatter3DSeries();
+
+    graph3D->setShadowQuality(QAbstract3DGraph::ShadowQualitySoftLow);
+    graph3D->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
+
+    graph3D->addSeries(series3D);
+
+    container3D = QWidget::createWindowContainer(graph3D);
+    ///////////////////////////////////////////////////////////////////////////
+
     // Checkbox list generationi
     for (int i : clusterIDs)
     {
@@ -74,18 +91,7 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
         firstItem->setChecked(true);
 
         ui->lswClusters->item(0)->setSelected(true);
-    }
-
-    // Создаем объекты для работы с 3D-графиком
-    graph3D = new Q3DScatter();
-    series3D = new QScatter3DSeries();
-
-    graph3D->setShadowQuality(QAbstract3DGraph::ShadowQualitySoftLow);
-    graph3D->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
-
-    graph3D->addSeries(series3D);
-
-    container3D = QWidget::createWindowContainer(graph3D);
+    }    
 
     // Установка темы
     Q3DTheme *currentTheme = graph3D->activeTheme();
@@ -144,10 +150,32 @@ void ToolWindow::on_lswClusters_itemSelectionChanged()
     }
 
     // Debug Information
-    qDebug() << "Selected Cluster ID: " << ID << "(" << clusterPoints.cluster.size() << "/" << allPoints.cluster.size() << ")";
+    qDebug() << "Selected Cluster ID: " << ID << "(" <<
+        clusterPoints.cluster.size() << "/" << allPoints.cluster.size() << ")";
 
     cameraScene->removeRule(); // Удаляем старую линейку (если была создана)
     cameraScene->set3DPoints(clusterPoints);
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Обновляем набор точек для рисования 3D
+    ///////////////////////////////////////////////////////////////////////////
+
+    // Удалить старые точки
+    series3D->dataProxy()->removeItems(0, series3D->dataProxy()->itemCount());
+
+    // Получить новые точки
+    QScatterDataArray data;
+    for (size_t i = 0; i < clusterPoints.cluster.size(); i++)
+    {
+        data << QVector3D(clusterPoints.xyz.at(i).at(0),
+                          clusterPoints.xyz.at(i).at(1),
+                          clusterPoints.xyz.at(i).at(2));
+    }
+
+    // Передать точки в объект Series
+    series3D->dataProxy()->addItems(data);
+
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 void ToolWindow::on_btn2D_clicked()
@@ -164,26 +192,10 @@ void ToolWindow::on_btn2D_clicked()
     }
 }
 
-
 void ToolWindow::on_btn3D_clicked()
 {
     if (getMode() == ToolWindow::Mode2D)
     {
-        // Удалить старые точки
-        series3D->dataProxy()->removeItems(0, series3D->dataProxy()->itemCount());
-
-        // Получить новые точки
-        QScatterDataArray data;
-        for (size_t i = 0; i < clusterPoints.cluster.size(); i++)
-        {
-            data << QVector3D(clusterPoints.xyz.at(i).at(0),
-                              clusterPoints.xyz.at(i).at(1),
-                              clusterPoints.xyz.at(i).at(2));
-        }
-
-        // Передать точки в объект Series
-        series3D->dataProxy()->addItems(data);
-
         ui->graphicsView->setVisible(false);
         container3D->setVisible(true);
 

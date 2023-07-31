@@ -42,6 +42,8 @@ private:
     bool circleEndAdded = false;
     bool textItemAdded = false;
 
+    bool circleFound = false;
+
     double circleCurrentRealX = 0;
     double circleCurrentRealY = 0;
     double circleCurrentRealZ = 0;
