@@ -2,21 +2,20 @@
 #define TOOLWINDOW_H
 
 #include <QDialog>
+#include <Q3DScatter>
 
 #include "camerascene.h"
 
-#include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/videoio.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+//#include <opencv2/opencv.hpp>
+//#include <opencv2/core.hpp>
+//#include <opencv2/videoio.hpp>
+//#include <opencv2/highgui.hpp>
+//#include <opencv2/imgproc/imgproc.hpp>
 
 #include "datastructure.h"
 
 #include <algorithm>
 #include <iterator>
-
-#include <Q3DScatter>
 
 namespace Ui {
 class ToolWindow;
@@ -27,7 +26,7 @@ class ToolWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent = nullptr);
+    explicit ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent = nullptr);
     ~ToolWindow();
 
     enum ToolMode {Mode2D, Mode3D};
@@ -48,8 +47,8 @@ private:
     cv::Mat source;
     cv::Mat destination;
     QImage imgcam;    
-    Data3DVector allPoints;
-    Data3DVector clusterPoints;
+    t_vuxyzrgb allPoints;
+    t_vuxyzrgb clusterPoints;
 
     ToolMode toolMode;
 
@@ -57,7 +56,7 @@ private:
     QScatter3DSeries *series3D;
     QWidget *container3D;
 
-    std::vector<int> getClusterIDs(Data3DVector points);
+    std::vector<int> getClusterIDs(t_vuxyzrgb points);
 
     CameraScene *cameraScene;
 };

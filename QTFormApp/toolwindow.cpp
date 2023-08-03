@@ -9,7 +9,7 @@
 #include <QScreen>
 #include <QMessageBox>
 
-ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
+ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ToolWindow)
 {
@@ -120,7 +120,7 @@ ToolWindow::~ToolWindow()
     delete ui;
 }
 
-std::vector<int> ToolWindow::getClusterIDs(Data3DVector points)
+std::vector<int> ToolWindow::getClusterIDs(t_vuxyzrgb points)
 {
     std::vector<int> clusterIDs = points.cluster;
     std::vector<int>::iterator it;
@@ -219,6 +219,7 @@ void ToolWindow::setMode(ToolMode mode)
 {
     toolMode = mode;
 }
+
 ToolWindow::ToolMode ToolWindow::getMode()
 {
     return toolMode;

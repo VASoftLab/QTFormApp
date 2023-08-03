@@ -303,7 +303,7 @@ CameraScene::Mode CameraScene::getMode()
     return sceneMode;
 }
 
-void CameraScene::set3DPoints(Data3DVector points)
+void CameraScene::set3DPoints(t_vuxyzrgb points)
 {
     clusterPoints.cluster.clear();
     clusterPoints.rgb.clear();

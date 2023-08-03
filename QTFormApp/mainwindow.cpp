@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "qlayout.h"
 #include "ui_mainwindow.h"
 #include "toolwindow.h"
 
@@ -56,9 +55,9 @@ void MainWindow::updatePicture()
     ui->lblCamera->setPixmap(QPixmap::fromImage(imgcam));
 }
 
-Data3DVector MainWindow:: getData(int rows, int cols, bool norm = true)
+t_vuxyzrgb MainWindow:: getData(int rows, int cols, bool norm = true)
 {
-    Data3DVector data;
+    t_vuxyzrgb data;
 
     // Путь к папке с данными
     auto dataPath = QDir::cleanPath(qApp->applicationDirPath() +
@@ -188,7 +187,7 @@ void MainWindow::on_btnScreenshot_clicked()
                cv::INTER_LINEAR);
 
     // Массив данных описывающий облоко 3D точек
-    Data3DVector data = getData(image.rows, image.cols);
+    t_vuxyzrgb data = getData(image.rows, image.cols);
 
     // Show tool window
     ToolWindow *toolWindow = new ToolWindow(image, data, this);
