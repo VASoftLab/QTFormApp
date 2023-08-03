@@ -15,9 +15,21 @@ ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Подгоняем размер сцены под размер изображения на входе
+    ui->graphicsView->setFixedWidth(image.cols);
+    ui->graphicsView->setFixedHeight(image.rows);
+
     // Центрируем окно в пределах экрана
     move(screen()->geometry().center() - frameGeometry().center());
 
+    // Запоминаем текущую геометрию
+    originalSize = this->geometry();
+
+    // Фиксируем форму и запрещаем изменение размеров пользователем
+    //this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+
+    //this->ui->verticalLayout->setAlignment(Qt::AlignCenter);
+    //this->ui->verticalLayoutBtn->setAlignment(Qt::AlignRight);
 
     // Set images for buttons
     QPixmap btn2Dimg(":/icons/img/icon-ruler.png");
@@ -191,10 +203,11 @@ void ToolWindow::on_btn2D_clicked()
     if (getMode() == ToolWindow::Mode3D)
     {
         container3D->setVisible(false);
-        ui->graphicsView->setVisible(true);
 
         ui->verticalLayout->removeWidget(container3D);
         ui->verticalLayout->addWidget(ui->graphicsView);
+
+        ui->graphicsView->setVisible(true);
 
         setMode(ToolMode::Mode2D);
     }
@@ -204,12 +217,17 @@ void ToolWindow::on_btn3D_clicked()
 {
     if (getMode() == ToolWindow::Mode2D)
     {
-        ui->graphicsView->setVisible(false);
-        container3D->setVisible(true);
-        container3D->setGeometry(ui->graphicsView->geometry());
+        ui->graphicsView->setVisible(false);        
 
         ui->verticalLayout->removeWidget(ui->graphicsView);
         ui->verticalLayout->addWidget(container3D);
+
+        container3D->setVisible(true);
+
+        // Восстанавливаем геометрию -- Костыль для фиксированной формы
+        //this->setFixedHeight(originalSize.height());
+        //this->setFixedWidth(originalSize.width());
+        //this->adjustSize();
 
         setMode(ToolMode::Mode3D);
     }

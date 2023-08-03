@@ -59,6 +59,7 @@ private:
     std::vector<int> getClusterIDs(t_vuxyzrgb points);
 
     CameraScene *cameraScene;
+    QRect originalSize;
 };
 
 #endif // TOOLWINDOW_H

@@ -47,7 +47,7 @@ public:
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
+        verticalLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
         graphicsView = new QGraphicsView(ToolWindow);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
         QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -67,6 +67,7 @@ public:
 
         verticalLayoutBtn = new QVBoxLayout();
         verticalLayoutBtn->setObjectName(QString::fromUtf8("verticalLayoutBtn"));
+        verticalLayoutBtn->setSizeConstraint(QLayout::SetFixedSize);
         lswClusters = new QListWidget(ToolWindow);
         lswClusters->setObjectName(QString::fromUtf8("lswClusters"));
         QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Expanding);
