@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "qlayout.h"
 #include "ui_mainwindow.h"
 #include "toolwindow.h"
 
@@ -60,11 +61,15 @@ Data3DVector MainWindow:: getData(int rows, int cols, bool norm = true)
     Data3DVector data;
 
     // Путь к папке с данными
-    auto dataPath = QDir::cleanPath(qApp->applicationDirPath() + QDir::separator() + "data");
+    auto dataPath = QDir::cleanPath(qApp->applicationDirPath() +
+                                    QDir::separator() + "data");
     // qDebug() << "Data path : " << dataPath;
 
     // Чтение данных
-    auto fileName = QFileDialog::getOpenFileName(this, tr("Open Data File"), dataPath, tr("TXT Files (*.txt)"));
+    auto fileName = QFileDialog::getOpenFileName(this,
+                                                 tr("Open Data File"),
+                                                 dataPath,
+                                                 tr("TXT Files (*.txt)"));
     QFile file(fileName);
     QStringList lineData;
     Data3DItem data3DItem;
@@ -154,9 +159,11 @@ Data3DVector MainWindow:: getData(int rows, int cols, bool norm = true)
             for (size_t i = 0; i < data.vu.size(); i++)
             {
                 if (Xmax != Xmin)
-                    data.vu.at(i).at(0) = cols * (data.vu.at(i).at(0) - Xmin) / (Xmax - Xmin);
+                    data.vu.at(i).at(0) = cols * (data.vu.at(i).at(0) - Xmin) /
+                                          (Xmax - Xmin);
                 if (Ymax != Ymin)
-                    data.vu.at(i).at(1) = rows * (data.vu.at(i).at(1) - Ymin) / (Ymax - Ymin);
+                    data.vu.at(i).at(1) = rows * (data.vu.at(i).at(1) - Ymin) /
+                                          (Ymax - Ymin);
             }
         }
     }
@@ -173,13 +180,19 @@ void MainWindow::on_btnScreenshot_clicked()
     // VA 31-07-2023: Это временный костыль.
     // Размер изображения на панели инструментов (и сама панель)
     // должны изменять свой размер автоматически
-    cv::resize(image_original, image, cv::Size(640, 480), 0, 0, cv::INTER_LINEAR);
+    cv::resize(image_original,
+               image,
+               cv::Size(640, 480),
+               0,
+               0,
+               cv::INTER_LINEAR);
 
     // Массив данных описывающий облоко 3D точек
     Data3DVector data = getData(image.rows, image.cols);
 
     // Show tool window
     ToolWindow *toolWindow = new ToolWindow(image, data, this);
+    // toolWindow->layout()->setSizeConstraint(QLayout::SetFixedSize);
     toolWindow->exec();
     delete toolWindow;
 }

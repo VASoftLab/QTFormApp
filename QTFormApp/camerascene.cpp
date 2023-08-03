@@ -384,8 +384,8 @@ void CameraScene::createTextItem(qreal X, qreal Y, double distance, double angle
     font.setBold(false);
 
     textItem->setFont(font);
-    auto W = textItem->boundingRect().width();
-    auto H = textItem->boundingRect().height();
+    // auto W = textItem->boundingRect().width();
+    // auto H = textItem->boundingRect().height();
     textItem->setPos(X, Y);
     // textItem->setPlainText(QString::number(distance, 'f', 2));
     // Отрисовка метки на белом фоне с 50% прозрачностью

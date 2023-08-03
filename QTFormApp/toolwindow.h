@@ -41,6 +41,8 @@ private slots:
 
     void on_btn3D_clicked();
 
+    void on_btnSave_clicked();
+
 private:
     Ui::ToolWindow *ui;    
     cv::Mat source;
