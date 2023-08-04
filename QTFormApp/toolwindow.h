@@ -60,6 +60,34 @@ private:
 
     CameraScene *cameraScene;
     QRect originalSize;
+
+    double get_distance(Point3D p1, Point3D p2);
+    size_t get_sum_count(std::vector<double> X,
+                         std::vector<double> Y,
+                         std::vector<double> Z,
+                         Point3D MN, Point3D M0);
+
+    double np_linalg_norm(std::vector<double> a);
+
+    std::vector<double> cross(std::vector<double> a,
+                              std::vector<double> b);
+
+    std::vector<double> substr(std::vector<double> a,
+                               std::vector<double> b);
+
+    double lineseg_dist(std::vector<double> p,
+                        std::vector<double> a,
+                        std::vector<double> b);
+
+
+    void get_sizes(t_vuxyzrgb data,     // Входной массив точек кластера
+                   double* L,           // Выход - Длина
+                   double* W,           // Выход - Ширина
+                   double* H,           // Выход - Высота
+                   double* Length,      // Выход - Длина осевой линии
+                   double* Width,       // Выход - Ширина осевой линии
+                   double* Distance);   // Выход - Расстояние до центра масс
+
 };
 
 #endif // TOOLWINDOW_H
