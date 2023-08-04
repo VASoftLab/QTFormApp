@@ -1,18 +1,35 @@
 #include "toolwindow.h"
+#include "qdatetime.h"
+#include "qdir.h"
 #include "ui_toolwindow.h"
 
 #include <QListWidgetItem>
 #include <QRadioButton>
 #include <QGraphicsPixmapItem>
 #include <QScreen>
+#include <QMessageBox>
 
-ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
+ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ToolWindow)
 {
     ui->setupUi(this);
+
+    // Подгоняем размер сцены под размер изображения на входе
+    ui->graphicsView->setFixedWidth(image.cols);
+    ui->graphicsView->setFixedHeight(image.rows);
+
     // Центрируем окно в пределах экрана
     move(screen()->geometry().center() - frameGeometry().center());
+
+    // Запоминаем текущую геометрию
+    originalSize = this->geometry();
+
+    // Фиксируем форму и запрещаем изменение размеров пользователем
+    //this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+
+    //this->ui->verticalLayout->setAlignment(Qt::AlignCenter);
+    //this->ui->verticalLayoutBtn->setAlignment(Qt::AlignRight);
 
     // Set images for buttons
     QPixmap btn2Dimg(":/icons/img/icon-ruler.png");
@@ -63,7 +80,7 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
 
     graph3D->addSeries(series3D);
 
-    container3D = QWidget::createWindowContainer(graph3D);
+    container3D = QWidget::createWindowContainer(graph3D);    
     ///////////////////////////////////////////////////////////////////////////
 
     // Checkbox list generationi
@@ -99,6 +116,9 @@ ToolWindow::ToolWindow(cv::Mat image, Data3DVector data, QWidget *parent) :
     currentTheme->setType(Q3DTheme::ThemeArmyBlue);
 
     setMode(ToolMode::Mode2D);
+
+    // Для фиксации кнопок с правой стороны (сбивает выравнивание сцены)
+    // ui->verticalLayoutBtn->setAlignment(Qt::AlignRight);
 }
 
 ToolWindow::~ToolWindow()
@@ -112,7 +132,7 @@ ToolWindow::~ToolWindow()
     delete ui;
 }
 
-std::vector<int> ToolWindow::getClusterIDs(Data3DVector points)
+std::vector<int> ToolWindow::getClusterIDs(t_vuxyzrgb points)
 {
     std::vector<int> clusterIDs = points.cluster;
     std::vector<int>::iterator it;
@@ -183,10 +203,11 @@ void ToolWindow::on_btn2D_clicked()
     if (getMode() == ToolWindow::Mode3D)
     {
         container3D->setVisible(false);
-        ui->graphicsView->setVisible(true);
 
         ui->verticalLayout->removeWidget(container3D);
         ui->verticalLayout->addWidget(ui->graphicsView);
+
+        ui->graphicsView->setVisible(true);
 
         setMode(ToolMode::Mode2D);
     }
@@ -196,11 +217,17 @@ void ToolWindow::on_btn3D_clicked()
 {
     if (getMode() == ToolWindow::Mode2D)
     {
-        ui->graphicsView->setVisible(false);
-        container3D->setVisible(true);
+        ui->graphicsView->setVisible(false);        
 
         ui->verticalLayout->removeWidget(ui->graphicsView);
         ui->verticalLayout->addWidget(container3D);
+
+        container3D->setVisible(true);
+
+        // Восстанавливаем геометрию -- Костыль для фиксированной формы
+        //this->setFixedHeight(originalSize.height());
+        //this->setFixedWidth(originalSize.width());
+        //this->adjustSize();
 
         setMode(ToolMode::Mode3D);
     }
@@ -210,7 +237,48 @@ void ToolWindow::setMode(ToolMode mode)
 {
     toolMode = mode;
 }
+
 ToolWindow::ToolMode ToolWindow::getMode()
 {
     return toolMode;
 }
+
+void ToolWindow::on_btnSave_clicked()
+{
+    // Создаем папку output, если она не существует
+    QDir dir("output");
+    if (!dir.exists())
+        dir.mkpath(".");
+
+    // Текущие дата и время
+    QDateTime date = QDateTime::currentDateTime();
+    QString timeStamp = date.toString("dd_MM_yyyy_hh_mm_ss");
+
+    // Генерируем имя файла и сохраняем сцену снимка с линейкой
+    QString sceneImage = QString("output") + QDir::separator() +
+                         QString("scene_" + timeStamp + ".png");
+    // Захват сцены снимка с линейкой
+    QPixmap sceneMap = ui->graphicsView->grab(
+        ui->graphicsView->sceneRect().toRect());
+    sceneMap.save(sceneImage);
+
+
+    // Генерируем имя файла и сохраняем сцену 3D графика с линейкой
+    QString chartImage = QString("output") + QDir::separator() +
+                         QString("chart_" + timeStamp + ".png");
+    QImage graph3DImage = graph3D->renderToImage();
+    QPixmap chartMap;
+    chartMap.convertFromImage(graph3DImage);
+    chartMap.save(chartImage);
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Информация");
+    msgBox.setText(QString("Экспорт результатов завершен:\n") +
+                   QString(sceneImage + "\n") +
+                   QString(chartImage + "\n"));
+
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.exec();
+
+}
+

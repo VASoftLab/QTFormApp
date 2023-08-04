@@ -303,7 +303,7 @@ CameraScene::Mode CameraScene::getMode()
     return sceneMode;
 }
 
-void CameraScene::set3DPoints(Data3DVector points)
+void CameraScene::set3DPoints(t_vuxyzrgb points)
 {
     clusterPoints.cluster.clear();
     clusterPoints.rgb.clear();
@@ -384,8 +384,10 @@ void CameraScene::createTextItem(qreal X, qreal Y, double distance, double angle
     font.setBold(false);
 
     textItem->setFont(font);
-    auto W = textItem->boundingRect().width();
-    auto H = textItem->boundingRect().height();
+    //auto W = textItem->boundingRect().width();
+    //auto H = textItem->boundingRect().height();
+    //textItem->setPos(X + (W/2 * qSin(90 - angle)), Y - (W/2 * qCos(90 - angle)));
+
     textItem->setPos(X, Y);
     // textItem->setPlainText(QString::number(distance, 'f', 2));
     // Отрисовка метки на белом фоне с 50% прозрачностью

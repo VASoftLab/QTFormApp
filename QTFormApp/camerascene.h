@@ -19,7 +19,7 @@ public:
     void setMode(Mode mode);
     Mode getMode();
 
-    void set3DPoints(Data3DVector points);
+    void set3DPoints(t_vuxyzrgb points);
     void removeRule();
 
 private:
@@ -57,7 +57,7 @@ private:
     double circleEndRealZ = 0;
 
     Mode sceneMode;
-    Data3DVector clusterPoints;
+    t_vuxyzrgb clusterPoints;
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
