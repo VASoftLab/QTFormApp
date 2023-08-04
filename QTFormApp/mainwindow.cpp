@@ -173,18 +173,19 @@ t_vuxyzrgb MainWindow:: getData(int rows, int cols, bool norm = true)
 void MainWindow::on_btnScreenshot_clicked()
 {
     // Get current Image from camera
-    cv::Mat image_original;
-    webcam.read(image_original);
+    //cv::Mat image_original;
+    //webcam.read(image_original);
     cv::Mat image;
+    webcam.read(image);
     // VA 31-07-2023: Это временный костыль.
     // Размер изображения на панели инструментов (и сама панель)
     // должны изменять свой размер автоматически
-    cv::resize(image_original,
-               image,
-               cv::Size(640, 480),
-               0,
-               0,
-               cv::INTER_LINEAR);
+    //cv::resize(image_original,
+    //           image,
+    //           cv::Size(640, 480),
+    //           0,
+    //           0,
+    //           cv::INTER_LINEAR);
 
     // Массив данных описывающий облоко 3D точек
     t_vuxyzrgb data = getData(image.rows, image.cols);
