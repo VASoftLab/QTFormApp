@@ -79,6 +79,16 @@ ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
     graph3D = new Q3DScatter();
     series3D = new QScatter3DSeries();
 
+    series3D->setItemSize(0.2f);
+    series3D->setMeshSmooth(true);
+
+    graph3D->axisX()->setTitle("X");
+    graph3D->axisY()->setTitle("Y");
+    graph3D->axisZ()->setTitle("Z");
+
+    series3D->setItemLabelFormat(
+        QStringLiteral("@xTitle: @xLabel @yTitle: @yLabel @zTitle: @zLabel"));
+
     graph3D->setShadowQuality(QAbstract3DGraph::ShadowQualitySoftLow);
     graph3D->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
 
