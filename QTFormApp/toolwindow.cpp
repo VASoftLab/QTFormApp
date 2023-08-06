@@ -123,6 +123,8 @@ ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
 
     // Для фиксации кнопок с правой стороны (сбивает выравнивание сцены)
     // ui->verticalLayoutBtn->setAlignment(Qt::AlignRight);
+
+    ui->btnDelete->setVisible(false);
 }
 
 ToolWindow::~ToolWindow()
@@ -451,6 +453,7 @@ void ToolWindow::on_btn2D_clicked()
         ui->verticalLayout->addWidget(ui->graphicsView);
 
         ui->graphicsView->setVisible(true);
+        ui->btnDelete->setVisible(false);
 
         setMode(ToolMode::Mode2D);
     }
@@ -460,12 +463,13 @@ void ToolWindow::on_btn3D_clicked()
 {
     if (getMode() == ToolWindow::Mode2D)
     {
-        ui->graphicsView->setVisible(false);        
+        ui->graphicsView->setVisible(false);
 
         ui->verticalLayout->removeWidget(ui->graphicsView);
         ui->verticalLayout->addWidget(container3D);
 
         container3D->setVisible(true);
+        ui->btnDelete->setVisible(true);
 
         // Восстанавливаем геометрию -- Костыль для фиксированной формы
         //this->setFixedHeight(originalSize.height());
@@ -551,4 +555,56 @@ void ToolWindow::updateInfoA(double X, double Y, double Z, double D)
         text = "";
 
     ui->lineEditInfo->setText(text);
+}
+
+void ToolWindow::on_btnDelete_clicked()
+{
+    int ind = series3D->selectedItem();
+    if (ind == -1)
+        return;
+
+    // Удалить выделенную точку
+    series3D->dataProxy()->removeItems(ind, 1);
+
+    auto data = series3D->dataProxy()->array();
+    t_vuxyzrgb newcluster;
+
+    for (size_t i = 0; i < (size_t)data->size(); i++)
+    {
+        std::vector<double> xyz;
+
+        xyz.push_back(data->at(i).x());
+        xyz.push_back(data->at(i).y());
+        xyz.push_back(data->at(i).z());
+
+        newcluster.xyz.push_back(xyz);
+        // Добавляем фиктивный признак принадлежности кластеру
+        newcluster.cluster.push_back(1);
+    }
+
+    // Рассчет геометрии точек
+
+    double L, W, H, Length, Width, Distance;
+    get_sizes(newcluster, &L, &W, &H, &Length, &Width, &Distance);
+
+    qDebug() << "L: " << L;
+    qDebug() << "W: " << W;
+    qDebug() << "H: " << H;
+    qDebug() << "Length: " << Length;
+    qDebug() << "Width: " << Width;
+    qDebug() << "Distance: " << Distance;
+
+    geometryL = L;
+    geometryW = W;
+    geometryH = H;
+    geometryLength = Length;
+    geometryWidth = Width;
+    geometryDistance = Distance;
+
+    ui->labelInfo->setText("L:\t\t" + QString::number(L, 'f', 1) + "\n" +
+                           "W:\t\t" + QString::number(W, 'f', 1) + "\n" +
+                           "H:\t\t" + QString::number(H, 'f', 1) + "\n" +
+                           "Length:\t\t" + QString::number(Length, 'f', 1) + "\n" +
+                           "Width:\t\t" + QString::number(Width, 'f', 1) + "\n" +
+                           "Distance:\t" + QString::number(Distance, 'f', 1));
 }
