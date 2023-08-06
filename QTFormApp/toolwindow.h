@@ -64,6 +64,13 @@ private:
     CameraScene *cameraScene;
     QRect originalSize;
 
+    double geometryL;
+    double geometryW;
+    double geometryH;
+    double geometryLength;
+    double geometryWidth;
+    double geometryDistance;
+
     double get_distance(Point3D p1, Point3D p2);
     size_t get_sum_count(std::vector<double> X,
                          std::vector<double> Y,

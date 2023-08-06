@@ -3,6 +3,7 @@
 #include "qdir.h"
 #include "ui_toolwindow.h"
 
+#include <fstream>
 #include <QListWidgetItem>
 #include <QRadioButton>
 #include <QGraphicsPixmapItem>
@@ -420,6 +421,13 @@ void ToolWindow::on_lswClusters_itemSelectionChanged()
     qDebug() << "Width: " << Width;
     qDebug() << "Distance: " << Distance;
 
+    geometryL = L;
+    geometryW = W;
+    geometryH = H;
+    geometryLength = Length;
+    geometryWidth = Width;
+    geometryDistance = Distance;
+
     ui->labelInfo->setText("L:\t\t" + QString::number(L, 'f', 1) + "\n" +
                            "W:\t\t" + QString::number(W, 'f', 1) + "\n" +
                            "H:\t\t" + QString::number(H, 'f', 1) + "\n" +
@@ -506,11 +514,25 @@ void ToolWindow::on_btnSave_clicked()
     chartMap.convertFromImage(graph3DImage);
     chartMap.save(chartImage);
 
+    // Сохранение результатов в файл
+    QString odometry = QString("output") + QDir::separator() +
+                       QString("odometry_" + timeStamp + ".txt");
+
+    std::ofstream odomFile(odometry.toStdString(), std::ofstream::out | std::ofstream::trunc);
+    odomFile << "L:\t\t" + QString::number(geometryL, 'f', 1).toStdString() << std::endl;
+    odomFile << "H:\t\t" + QString::number(geometryH, 'f', 1).toStdString() << std::endl;
+    odomFile << "W:\t\t" + QString::number(geometryW, 'f', 1).toStdString() << std::endl;
+    odomFile << "Length:\t\t" + QString::number(geometryLength, 'f', 1).toStdString() << std::endl;
+    odomFile << "Width:\t\t" + QString::number(geometryWidth, 'f', 1).toStdString() << std::endl;
+    odomFile << "Distance:\t" + QString::number(geometryDistance, 'f', 1).toStdString() << std::endl;
+    odomFile.close();
+
     QMessageBox msgBox;
     msgBox.setWindowTitle("Информация");
     msgBox.setText(QString("Экспорт результатов завершен:\n") +
                    QString(sceneImage + "\n") +
-                   QString(chartImage + "\n"));
+                   QString(chartImage + "\n") +
+                   QString(odometry + "\n"));
 
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
