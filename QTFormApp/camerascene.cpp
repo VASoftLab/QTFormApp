@@ -2,6 +2,7 @@
 
 #include <QGraphicsPixmapItem>
 #include <QGraphicsLineItem>
+#include <QToolTip>
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -25,7 +26,7 @@ CameraScene::CameraScene(QImage img, QObject *parent)
     circleCurrent = nullptr;
     circleStart = nullptr;
     circleEnd = nullptr;
-    textItem = nullptr;
+    textItem = nullptr;    
 
     setMode(Mode::Undefined);
 }
@@ -279,8 +280,35 @@ void CameraScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             circleCurrentRealZ = clusterPoints.xyz.at(i).at(2);
 
             circleFound = true;
+
+            double distance = std::sqrt(
+                circleCurrentRealX * circleCurrentRealX +
+                circleCurrentRealY * circleCurrentRealY +
+                circleCurrentRealZ * circleCurrentRealZ);
+
+            QToolTip::showText(
+                event->screenPos(),
+                "(" + QString::number(circleCurrentRealX, 'f', 1) + ":"
+                    + QString::number(circleCurrentRealY, 'f', 1) + ":"
+                    + QString::number(circleCurrentRealZ, 'f', 1) + ") D: "
+                    + QString::number(distance, 'f', 1),
+                nullptr,
+                {},
+                5000);
+
+            // Посылаем сигнал
+            emit updateInfo(circleCurrentRealX,
+                            circleCurrentRealY,
+                            circleCurrentRealZ,
+                            distance);
             break;
-        }        
+        }
+        else
+        {
+            // Посылаем сигнал
+            emit updateInfo(0, 0, 0, 0);
+            QToolTip::hideText();
+        }
     }
 
     if ((!circleFound) && (circleCurrent != nullptr))
@@ -375,7 +403,7 @@ void CameraScene::createTextItem(qreal X, qreal Y, double distance, double angle
     if (textItem == nullptr)
     {
         textItem = new QGraphicsTextItem();
-        textItem->setDefaultTextColor(Qt::red);
+        textItem->setDefaultTextColor(Qt::blue);
     }
 
     // Задаем шрифт для метки

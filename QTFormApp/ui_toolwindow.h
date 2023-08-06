@@ -14,6 +14,8 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGridLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
@@ -28,16 +30,18 @@ public:
     QGraphicsView *graphicsView;
     QVBoxLayout *verticalLayoutBtn;
     QListWidget *lswClusters;
+    QLabel *labelInfo;
     QPushButton *btn2D;
     QPushButton *btn3D;
     QPushButton *btnSave;
+    QLineEdit *lineEditInfo;
 
     void setupUi(QDialog *ToolWindow)
     {
         if (ToolWindow->objectName().isEmpty())
             ToolWindow->setObjectName(QString::fromUtf8("ToolWindow"));
         ToolWindow->setWindowModality(Qt::ApplicationModal);
-        ToolWindow->resize(818, 500);
+        ToolWindow->resize(868, 530);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -75,16 +79,28 @@ public:
         sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(lswClusters->sizePolicy().hasHeightForWidth());
         lswClusters->setSizePolicy(sizePolicy2);
-        lswClusters->setMinimumSize(QSize(150, 0));
+        lswClusters->setMinimumSize(QSize(200, 0));
         lswClusters->setMaximumSize(QSize(150, 16777215));
 
         verticalLayoutBtn->addWidget(lswClusters);
+
+        labelInfo = new QLabel(ToolWindow);
+        labelInfo->setObjectName(QString::fromUtf8("labelInfo"));
+        QFont font;
+        font.setPointSize(12);
+        labelInfo->setFont(font);
+        labelInfo->setFrameShape(QFrame::NoFrame);
+        labelInfo->setLineWidth(1);
+        labelInfo->setTextFormat(Qt::AutoText);
+        labelInfo->setWordWrap(true);
+
+        verticalLayoutBtn->addWidget(labelInfo);
 
         btn2D = new QPushButton(ToolWindow);
         btn2D->setObjectName(QString::fromUtf8("btn2D"));
         sizePolicy1.setHeightForWidth(btn2D->sizePolicy().hasHeightForWidth());
         btn2D->setSizePolicy(sizePolicy1);
-        btn2D->setMinimumSize(QSize(150, 60));
+        btn2D->setMinimumSize(QSize(200, 60));
         btn2D->setMaximumSize(QSize(150, 60));
 
         verticalLayoutBtn->addWidget(btn2D);
@@ -93,7 +109,7 @@ public:
         btn3D->setObjectName(QString::fromUtf8("btn3D"));
         sizePolicy1.setHeightForWidth(btn3D->sizePolicy().hasHeightForWidth());
         btn3D->setSizePolicy(sizePolicy1);
-        btn3D->setMinimumSize(QSize(150, 60));
+        btn3D->setMinimumSize(QSize(200, 60));
         btn3D->setMaximumSize(QSize(150, 60));
 
         verticalLayoutBtn->addWidget(btn3D);
@@ -102,13 +118,18 @@ public:
         btnSave->setObjectName(QString::fromUtf8("btnSave"));
         sizePolicy1.setHeightForWidth(btnSave->sizePolicy().hasHeightForWidth());
         btnSave->setSizePolicy(sizePolicy1);
-        btnSave->setMinimumSize(QSize(150, 40));
+        btnSave->setMinimumSize(QSize(200, 40));
         btnSave->setMaximumSize(QSize(40, 16777215));
 
         verticalLayoutBtn->addWidget(btnSave);
 
 
         gridLayout->addLayout(verticalLayoutBtn, 0, 1, 1, 1);
+
+        lineEditInfo = new QLineEdit(ToolWindow);
+        lineEditInfo->setObjectName(QString::fromUtf8("lineEditInfo"));
+
+        gridLayout->addWidget(lineEditInfo, 1, 0, 1, 1);
 
 
         retranslateUi(ToolWindow);
@@ -119,6 +140,7 @@ public:
     void retranslateUi(QDialog *ToolWindow)
     {
         ToolWindow->setWindowTitle(QCoreApplication::translate("ToolWindow", "Tool Window", nullptr));
+        labelInfo->setText(QCoreApplication::translate("ToolWindow", "INFO", nullptr));
         btn2D->setText(QString());
         btn3D->setText(QString());
         btnSave->setText(QCoreApplication::translate("ToolWindow", "SAVE", nullptr));

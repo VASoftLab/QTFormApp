@@ -33,6 +33,9 @@ public:
     void setMode(ToolMode mode);
     ToolMode getMode();
 
+public slots:
+    void updateInfoA(double X, double Y, double Z, double D);
+
 private slots:
     void on_lswClusters_itemSelectionChanged();
 

@@ -70,6 +70,9 @@ ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
     // https://stackoverflow.com/questions/7772080/tracking-mouse-move-in-qgraphicsscene-class
     ui->graphicsView->setMouseTracking(true);
 
+    // Добавляем слот-сигнал
+    QObject::connect(cameraScene, &CameraScene::updateInfo, this, &ToolWindow::updateInfoA);
+
     ///////////////////////////////////////////////////////////////////////////
     // Создаем объекты для работы с 3D-графиком
     graph3D = new Q3DScatter();
@@ -417,6 +420,13 @@ void ToolWindow::on_lswClusters_itemSelectionChanged()
     qDebug() << "Width: " << Width;
     qDebug() << "Distance: " << Distance;
 
+    ui->labelInfo->setText("L:\t\t" + QString::number(L, 'f', 1) + "\n" +
+                           "W:\t\t" + QString::number(W, 'f', 1) + "\n" +
+                           "H:\t\t" + QString::number(H, 'f', 1) + "\n" +
+                           "Length:\t\t" + QString::number(Length, 'f', 1) + "\n" +
+                           "Width:\t\t" + QString::number(Width, 'f', 1) + "\n" +
+                           "Distance:\t" + QString::number(Distance, 'f', 1));
+
     // Передать точки в объект Series
     series3D->dataProxy()->addItems(data);
 
@@ -505,4 +515,18 @@ void ToolWindow::on_btnSave_clicked()
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
 
+}
+
+void ToolWindow::updateInfoA(double X, double Y, double Z, double D)
+{
+    QString text = "X: " + QString::number(X, 'f', 1) + "; " +
+                   "Y: " + QString::number(Y, 'f', 1) + "; " +
+                   "Z: " + QString::number(Z, 'f', 1) + "; " +
+                   "D: " + QString::number(D, 'f', 1);
+
+    // Если точка не выделена, стираем информацию о предыдущем выделении
+    if ((X == 0) & (Y == 0) & (Z == 0) & (D == 0))
+        text = "";
+
+    ui->lineEditInfo->setText(text);
 }

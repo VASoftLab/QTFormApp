@@ -64,6 +64,9 @@ private:
     void createCircleStart(QRectF rect);
     void createCircleEnd(QRectF rect);
     void createTextItem(qreal X, qreal Y, double distance, double angle);
+
+signals:
+    void updateInfo(double X, double Y, double Z, double D);
 };
 
 #endif // CAMERASCENE_H
