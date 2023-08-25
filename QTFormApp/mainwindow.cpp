@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "toolwindow.h"
 
 #include <QFileDialog>
 #include <QScreen>
@@ -28,11 +27,13 @@ MainWindow::MainWindow(QWidget *parent)
         timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(updatePicture()));
         timer->start(100);
-    }    
+    }
+    toolWindow = new ToolWindow(this);
 }
 
 MainWindow::~MainWindow()
 {
+    delete toolWindow;
     delete ui;
 }
 
@@ -153,6 +154,7 @@ t_vuxyzrgb MainWindow:: getData(int rows, int cols, bool norm = true)
             data.cluster.push_back(data3DItem.cluster);
         }
 
+        /*
         if (norm)
         {
             for (size_t i = 0; i < data.vu.size(); i++)
@@ -165,6 +167,7 @@ t_vuxyzrgb MainWindow:: getData(int rows, int cols, bool norm = true)
                                           (Ymax - Ymin);
             }
         }
+        */
     }
 
     return data;
@@ -190,10 +193,12 @@ void MainWindow::on_btnScreenshot_clicked()
     // Массив данных описывающий облоко 3D точек
     t_vuxyzrgb data = getData(image.rows, image.cols);
 
-    // Show tool window
-    ToolWindow *toolWindow = new ToolWindow(image, data, this);
+    // Show tool window    
+    toolWindow->setData(image, data);
+    toolWindow->show();
+    toolWindow->activateWindow();
     // toolWindow->layout()->setSizeConstraint(QLayout::SetFixedSize);
-    toolWindow->exec();
-    delete toolWindow;
+    // toolWindow->exec();
+    // delete toolWindow;
 }
 

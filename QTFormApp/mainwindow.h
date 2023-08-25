@@ -11,6 +11,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "datastructure.h"
+#include "toolwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,6 +27,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    ToolWindow *toolWindow;
     QTimer *timer;
 
     cv::VideoCapture webcam;

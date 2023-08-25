@@ -10,27 +10,11 @@
 #include <QScreen>
 #include <QMessageBox>
 
-ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
+ToolWindow::ToolWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ToolWindow)
 {
     ui->setupUi(this);
-
-    // Подгоняем размер сцены под размер изображения на входе
-    ui->graphicsView->setFixedWidth(image.cols);
-    ui->graphicsView->setFixedHeight(image.rows);
-
-    // Центрируем окно в пределах экрана
-    move(screen()->geometry().center() - frameGeometry().center());
-
-    // Запоминаем текущую геометрию
-    originalSize = this->geometry();
-
-    // Фиксируем форму и запрещаем изменение размеров пользователем
-    //this->layout()->setSizeConstraint(QLayout::SetFixedSize);
-
-    //this->ui->verticalLayout->setAlignment(Qt::AlignCenter);
-    //this->ui->verticalLayoutBtn->setAlignment(Qt::AlignRight);
 
     // Set images for buttons
     QPixmap btn2Dimg(":/icons/img/icon-ruler.png");
@@ -44,6 +28,24 @@ ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
 
     ui->btn3D->setIcon(btn3Dico);
     ui->btn3D->setIconSize(btn3Dimg.rect().size());
+}
+
+void ToolWindow::setData(cv::Mat image, t_vuxyzrgb data)
+{
+    // Подгоняем размер сцены под размер изображения на входе
+    ui->graphicsView->setFixedWidth(image.cols);
+    ui->graphicsView->setFixedHeight(image.rows);
+
+    // Центрируем окно в пределах экрана
+    move(screen()->geometry().center() - frameGeometry().center());
+
+    // Запоминаем текущую геометрию
+    originalSize = this->geometry();
+
+    // Фиксируем форму и запрещаем изменение размеров пользователем
+    //this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+    //this->ui->verticalLayout->setAlignment(Qt::AlignCenter);
+    //this->ui->verticalLayoutBtn->setAlignment(Qt::AlignRight);
 
     // Check the source image
     if (image.empty())
@@ -94,7 +96,7 @@ ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
 
     graph3D->addSeries(series3D);
 
-    container3D = QWidget::createWindowContainer(graph3D);    
+    container3D = QWidget::createWindowContainer(graph3D);
     ///////////////////////////////////////////////////////////////////////////
 
     // Checkbox list generationi
@@ -122,7 +124,7 @@ ToolWindow::ToolWindow(cv::Mat image, t_vuxyzrgb data, QWidget *parent) :
         firstItem->setChecked(true);
 
         ui->lswClusters->item(0)->setSelected(true);
-    }    
+    }
 
     // Установка темы
     Q3DTheme *currentTheme = graph3D->activeTheme();
