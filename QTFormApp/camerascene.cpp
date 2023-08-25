@@ -246,10 +246,10 @@ void CameraScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     // Проверяем, попали ли в точку из 3D облака
     for (size_t i = 0; i < clusterPoints.cluster.size(); i++)
     {
-        if ((endPoint.x() > clusterPoints.vu.at(i).at(0) - CIRCLE_D / 2) &&
-            (endPoint.x() < clusterPoints.vu.at(i).at(0) + CIRCLE_D / 2) &&
-            (endPoint.y() > clusterPoints.vu.at(i).at(1) - CIRCLE_D / 2) &&
-            (endPoint.y() < clusterPoints.vu.at(i).at(1) + CIRCLE_D / 2))
+        if ((endPoint.x() > clusterPoints.vu.at(i).at(1) - CIRCLE_D / 2) &&
+            (endPoint.x() < clusterPoints.vu.at(i).at(1) + CIRCLE_D / 2) &&
+            (endPoint.y() > clusterPoints.vu.at(i).at(0) - CIRCLE_D / 2) &&
+            (endPoint.y() < clusterPoints.vu.at(i).at(0) + CIRCLE_D / 2))
         {
             // Удаляем предыдущую точку, если такая была найдена ранее
             if (circleCurrent != nullptr)
@@ -269,8 +269,8 @@ void CameraScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             }
 
             // Отрисовка окружности в области точки
-            circleCurrent->setRect(clusterPoints.vu.at(i).at(0) - CIRCLE_D / 2,
-                                   clusterPoints.vu.at(i).at(1) - CIRCLE_D / 2,
+            circleCurrent->setRect(clusterPoints.vu.at(i).at(1) - CIRCLE_D / 2,
+                                   clusterPoints.vu.at(i).at(0) - CIRCLE_D / 2,
                                    CIRCLE_D, CIRCLE_D);
             this->addItem(circleCurrent);
             circleCurrentAdded = true;
@@ -357,8 +357,8 @@ void CameraScene::set3DPoints(t_vuxyzrgb points)
         auto elipse = new QGraphicsEllipseItem();
         elipse->setPen(QPen(Qt::lightGray, 1, Qt::SolidLine));
         // Add real XY from 3D cloud data structure
-        elipse->setRect(points.vu.at(i).at(0) - CIRCLE_D / 2,
-                        points.vu.at(i).at(1) - CIRCLE_D / 2,
+        elipse->setRect(points.vu.at(i).at(1) - CIRCLE_D / 2,
+                        points.vu.at(i).at(0) - CIRCLE_D / 2,
                         CIRCLE_D, CIRCLE_D);
         circleItems.push_back(elipse);
         this->addItem(elipse);

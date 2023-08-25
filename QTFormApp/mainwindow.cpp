@@ -154,20 +154,20 @@ t_vuxyzrgb MainWindow:: getData(int rows, int cols, bool norm = true)
             data.cluster.push_back(data3DItem.cluster);
         }
 
-        /*
+
         if (norm)
         {
             for (size_t i = 0; i < data.vu.size(); i++)
             {
                 if (Xmax != Xmin)
-                    data.vu.at(i).at(0) = cols * (data.vu.at(i).at(0) - Xmin) /
+                    data.vu.at(i).at(1) = cols * (data.vu.at(i).at(1) - Xmin) /
                                           (Xmax - Xmin);
                 if (Ymax != Ymin)
-                    data.vu.at(i).at(1) = rows * (data.vu.at(i).at(1) - Ymin) /
+                    data.vu.at(i).at(0) = rows * (data.vu.at(i).at(0) - Ymin) /
                                           (Ymax - Ymin);
             }
         }
-        */
+
     }
 
     return data;
